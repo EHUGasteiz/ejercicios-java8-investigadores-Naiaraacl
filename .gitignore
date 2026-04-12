@@ -1,0 +1,6 @@
+### Ignored files and folders
+target/
+doc/
+# IntelliJ project files
+.idea
+*.iml
