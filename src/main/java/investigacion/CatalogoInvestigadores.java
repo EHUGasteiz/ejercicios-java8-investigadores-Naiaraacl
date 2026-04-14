@@ -1,8 +1,11 @@
 package investigacion;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.stream.Collectors.*;
 
 /**
  * Clase CatalogoInvestigadores
@@ -50,7 +53,12 @@ public class CatalogoInvestigadores {
      */
     public List<Investigador> getListaInvestigadoresOrdenadaPorPublicaciones() {
         // TODO: Ejercicio 7
-        return null;
+        return listaInvestigadores
+                .stream()
+                .sorted(Comparator.comparing(Investigador::getNumeroPublicaciones)
+                        .reversed())
+                .toList();
+
     }
 
     /**
@@ -59,8 +67,14 @@ public class CatalogoInvestigadores {
      * @return la media citas por departamento
      */
     public Map<String, Double> getMediaCitasPorDepartamento() {
-        // TODO: Ejercicio 8
-        return null;
+        // TODO: Ejercicio 8 (basado en ejercicio de examen)
+        return listaInvestigadores
+                .stream() //generar flujo
+                .collect(
+                        groupingBy(Investigador::getDepartamento,
+                                averagingInt(Investigador::getNumCitasTotales) //la media
+                        )
+                );
 
     }
 
@@ -71,7 +85,16 @@ public class CatalogoInvestigadores {
      */
     public Map<String, Map<Integer,List<String>>> getInvestigadoresPorDepYHIndex() {
         // TODO: Ejercicio 10
-        return null;
+        return listaInvestigadores
+                .stream()
+                //cuando vayamos a devolver algo tipo collector si es lista podemos usar collect(toList()) o toList()
+                .collect(
+                        groupingBy(Investigador::getDepartamento,
+                                groupingBy(Investigador::getHIndex,
+                                        mapping(Investigador::getNombre,
+                                                toList())))
+                );
+
 
     }
 
@@ -83,7 +106,13 @@ public class CatalogoInvestigadores {
      */
     public List<Investigador> getInvestigadoresOrdenadosPorDepYHIndex() {
         // TODO: Ejercicio 9
-        return null;
+        return listaInvestigadores
+            .stream()
+            .sorted(Comparator.comparing(Investigador::getDepartamento)
+                    .reversed()
+                    .thenComparingInt(Investigador::getHIndex)
+                    .reversed())
+            .toList();
     }
 
     /**

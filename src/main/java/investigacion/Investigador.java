@@ -2,6 +2,7 @@ package investigacion;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.stream.IntStream;
 
 import static java.lang.String.format;
 
@@ -74,9 +75,14 @@ public class Investigador {
      *
      * @return el índice H
      */
-    public int getHIndex() {
-        // TODO: Ejercicio 5
-        return 0;
+    public int getHIndex() {//si es 56 entinces es que tiene al menos 56 publicaciones, citas o referencias
+        // TODO: Ejercicio 5 (no aparece en el examen)
+        return IntStream
+                .iterate(getNumeroPublicaciones(), h->h-1)//es una especie de while
+                .limit(getNumeroPublicaciones())
+                .filter(h-> getNumPublicacionesConAlMenosCitas(h)>=h)//descartar valores de h tal que el num de publicaciones con al menos h referencias sea menos
+                .findFirst() //nos quedamos con el primero
+                .orElse(0); //en el casod e que no hayamos identificado ningun valor h, el valor devolvera 0
     }
 
     /**
@@ -87,7 +93,11 @@ public class Investigador {
      */
     public long getNumPublicacionesConAlMenosCitas(int pNum) {
         // TODO: Ejercicio 4
-        return 0;
+        return ListaPublicaciones.getListaPublicaciones()
+                .getPublicacionesInvestigador(id)
+                .stream()
+                .filter(p->p.getNumCitas()>=pNum)
+                .count();
     }
 
     /**
@@ -97,7 +107,8 @@ public class Investigador {
      */
     public int getNumeroPublicaciones() {
         // TODO: Ejercicio 2
-        return 0;
+        return ListaPublicaciones.getListaPublicaciones()
+                .getPublicacionesInvestigador(id).size();
     }
 
     /**
@@ -107,7 +118,11 @@ public class Investigador {
      */
     public int getNumCitasTotales() {
         // TODO: Ejercicio 3
-        return 0;
+        return ListaPublicaciones.getListaPublicaciones()
+                .getPublicacionesInvestigador(id)
+                .stream()
+                .mapToInt(Publicacion::getNumCitas) //convierte en un flujo de valores enteros
+                .sum();
     }
 
     @Override
